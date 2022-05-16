@@ -1,0 +1,81 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Author {
+  id: ID!
+  firstName: String!
+  lastName: String!
+}
+
+type AuthorDetail {
+  id: ID!
+  firstName: String!
+  lastName: String!
+}
+
+type ArrayAggregation {
+  count: Int!
+}
+
+type AuthorSummary {
+  total: ArrayAggregation!
+}
+
+type Authors {
+  summary: AuthorSummary!
+  details: [AuthorDetail!]!
+}
+
+type CommentDetail {
+  id: ID!
+}
+
+type CommentSummary {
+  total: ArrayAggregation!
+}
+
+type Comments {
+  summary: CommentSummary!
+  details: [CommentDetail!]!
+}
+
+type PostDetail {
+  id: ID!
+}
+
+type PostSummary {
+  total: ArrayAggregation!
+}
+
+type Posts {
+  summary: PostSummary!
+  details: [PostDetail!]!
+}
+
+type SimpleEvent {
+  userID: ID!
+  domain: String!
+  kind: String!
+  resourceID: ID!
+}
+
+type Query {
+  authors(where: WhereClause): Authors!
+  comments: Comments!
+  posts: Posts!
+}
+
+input WhereClause {
+  ids: [ID!]!
+}
+
+type Mutation {
+  createAuthor(firstName: String!, lastName: String!): Author!
+  deleteAuthor(id: ID!): Author!
+  changeAuthorName(id: ID!, firstName: String, lastName: String): Author!
+}
+
+type Subscription {
+  eventTape: SimpleEvent!
+}

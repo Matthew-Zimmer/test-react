@@ -1,0 +1,114 @@
+datasource db {
+    url      = env("DATABASE_URL")
+    provider = "postgresql"
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model User {
+    id String @id @default(uuid())
+
+    firstName String
+    lastName  String
+
+    posts    Post[]
+    comments Comment[]
+
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @updatedAt
+    EventToAuthor EventToAuthor[]
+}
+
+model Post {
+    id String @id @default(uuid())
+
+    title String
+
+    authorId String
+    author   User   @relation(fields: [authorId], references: [id])
+
+    comments Comment[]
+
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime      @updatedAt
+    EventToPost EventToPost[]
+}
+
+model Comment {
+    id String @id @default(uuid())
+
+    title String
+
+    authorId String
+    author   User   @relation(fields: [authorId], references: [id])
+
+    postId String
+    post   Post   @relation(fields: [postId], references: [id])
+
+    createdAt      DateTime         @default(now())
+    updatedAt      DateTime         @updatedAt
+    EventToComment EventToComment[]
+}
+
+model Event {
+    id String @id @default(uuid())
+
+    type EventType
+
+    data           Json
+    EventToComment EventToComment[]
+    EventToAuthor  EventToAuthor[]
+    EventToPost    EventToPost[]
+}
+
+model EventToAuthor {
+    id String @id @default(uuid())
+
+    eventId  String
+    authorId String
+
+    event  Event @relation(fields: [eventId], references: [id])
+    author User  @relation(fields: [authorId], references: [id])
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model EventToPost {
+    id String @id @default(uuid())
+
+    eventId String
+    postId  String
+
+    event Event @relation(fields: [eventId], references: [id])
+    post  Post  @relation(fields: [postId], references: [id])
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model EventToComment {
+    id String @id @default(uuid())
+
+    eventId   String
+    commentId String
+
+    event   Event   @relation(fields: [eventId], references: [id])
+    comment Comment @relation(fields: [commentId], references: [id])
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+enum EventType {
+    CREATE_USER
+    DELETE_USER
+
+    CREATE_POST
+    DELETE_POST
+
+    CREATE_COMMENT
+    DELETE_COMMENT
+}
